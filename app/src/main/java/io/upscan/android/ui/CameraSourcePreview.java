@@ -133,7 +133,7 @@ public class CameraSourcePreview extends ViewGroup {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
-        if (true) {
+        if (false) {
             int width = 320;
             int height = 240;
             if (mCameraSource != null) {
@@ -188,8 +188,8 @@ public class CameraSourcePreview extends ViewGroup {
         Log.d(TAG, "size was computed to " + childWidth + "x" + childHeight);
 
         // brutally setting to fixed size for now
-        childWidth = width;
-        childHeight = height;
+        //childWidth = width;
+        //childHeight = height;
 
         for (int i = 0; i < getChildCount(); ++i) {
             Log.d(TAG, "layout child: " + getChildAt(i));

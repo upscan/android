@@ -19,8 +19,14 @@ package io.upscan.android.ui;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PointF;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 
 import com.google.android.gms.vision.CameraSource;
 
@@ -46,6 +52,9 @@ import java.util.Set;
  * </ol>
  */
 public class GraphicOverlay<T extends GraphicOverlay.Graphic> extends View {
+
+    private static final String TAG = "UpScan";
+
     private final Object mLock = new Object();
     private int mPreviewWidth;
     private float mWidthScaleFactor = 1.0f;
@@ -54,6 +63,12 @@ public class GraphicOverlay<T extends GraphicOverlay.Graphic> extends View {
     private int mFacing = CameraSource.CAMERA_FACING_BACK;
     private Set<T> mGraphics = new HashSet<>();
     private T mFirstGraphic;
+
+    private PointF mViewFinderTopLeft;
+    private PointF mViewFinderTopRight;
+    private PointF mViewFinderBottomLeft;
+    private PointF mViewFinderBottomRight;
+    private Paint mViewFinderPaint;
 
     /**
      * Base class for a custom graphics object to be rendered within the graphic overlay.  Subclass
@@ -123,6 +138,10 @@ public class GraphicOverlay<T extends GraphicOverlay.Graphic> extends View {
 
     public GraphicOverlay(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mViewFinderPaint = new Paint();
+        mViewFinderPaint.setColor(Color.BLUE);
+        mViewFinderPaint.setAntiAlias(true);
+        mViewFinderPaint.setStrokeWidth(4f);
     }
 
     /**
@@ -204,5 +223,44 @@ public class GraphicOverlay<T extends GraphicOverlay.Graphic> extends View {
                 graphic.draw(canvas);
             }
         }
+
+        drawViewFinder(canvas);
+
+
+    }
+
+    private void drawViewFinder(Canvas canvas) {
+
+        if (mViewFinderTopLeft == null) {
+            final int width = canvas.getWidth();
+            final int margin = 100;
+
+            DisplayMetrics metrics = new DisplayMetrics();
+            WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+            wm.getDefaultDisplay().getMetrics(metrics);
+
+            float aspectRatio = ((float) metrics.widthPixels) / ((float) metrics.heightPixels);
+            float viewFinderHeight = (width - (2 * margin)) * aspectRatio;
+
+            Log.d(TAG, "aspectRatio is: " + aspectRatio);
+
+            mViewFinderTopLeft = new PointF(margin, margin);
+            mViewFinderTopRight = new PointF(width - margin, margin);
+            mViewFinderBottomLeft = new PointF(margin, margin + viewFinderHeight);
+            mViewFinderBottomRight = new PointF(width - margin, margin + viewFinderHeight);
+        }
+
+        canvas.drawLine(mViewFinderTopLeft.x, mViewFinderTopLeft.y,
+                mViewFinderTopRight.x, mViewFinderTopRight.y, mViewFinderPaint);
+
+        canvas.drawLine(mViewFinderTopLeft.x, mViewFinderTopLeft.y,
+                mViewFinderBottomLeft.x, mViewFinderBottomLeft.y, mViewFinderPaint);
+
+        canvas.drawLine(mViewFinderBottomLeft.x, mViewFinderBottomLeft.y,
+                mViewFinderBottomRight.x, mViewFinderBottomRight.y, mViewFinderPaint);
+
+        canvas.drawLine(mViewFinderBottomRight.x, mViewFinderBottomRight.y,
+                mViewFinderTopRight.x, mViewFinderTopRight.y, mViewFinderPaint);
+
     }
 }
