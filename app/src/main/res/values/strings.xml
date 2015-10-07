@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">UpScan</string>
+    <string name="action_settings">Settings</string>
+    <string name="ok">OK</string>
+    <string name="permission_camera_rationale">I really need that camera!</string>
+    <string name="low_storage_error">You are running out of storage space!</string>
+</resources>
