@@ -21,10 +21,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -32,6 +32,8 @@ import com.google.android.gms.vision.CameraSource;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import io.upscan.android.util.GeometryUtils;
 
 /**
  * A view which renders a series of custom graphics to be overlayed on top of an associated preview
@@ -69,6 +71,16 @@ public class GraphicOverlay<T extends GraphicOverlay.Graphic> extends View {
     private PointF mViewFinderBottomLeft;
     private PointF mViewFinderBottomRight;
     private Paint mViewFinderPaint;
+
+
+    public PointF[] getActiveArea() {
+        return new PointF[]{
+                mViewFinderTopLeft,
+                mViewFinderTopRight,
+                mViewFinderBottomLeft,
+                mViewFinderBottomRight
+        };
+    }
 
     /**
      * Base class for a custom graphics object to be rendered within the graphic overlay.  Subclass
@@ -229,6 +241,27 @@ public class GraphicOverlay<T extends GraphicOverlay.Graphic> extends View {
 
     }
 
+
+    public boolean isInsideViewFinder(Point[] cornerPoints, Graphic graphic) {
+
+        PointF[] rectangle = new PointF[]{
+                mViewFinderTopLeft,
+                mViewFinderTopRight,
+                mViewFinderBottomRight,
+                mViewFinderBottomLeft
+        };
+
+        for (Point point : cornerPoints) {
+            if (!GeometryUtils.isWithInRectangle(rectangle,
+                    new Point((int) graphic.translateX(point.x),
+                            (int) graphic.translateY(point.y)))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
     private void drawViewFinder(Canvas canvas) {
 
         if (mViewFinderTopLeft == null) {
@@ -241,8 +274,6 @@ public class GraphicOverlay<T extends GraphicOverlay.Graphic> extends View {
 
             float aspectRatio = ((float) metrics.widthPixels) / ((float) metrics.heightPixels);
             float viewFinderHeight = (width - (2 * margin)) * aspectRatio;
-
-            Log.d(TAG, "aspectRatio is: " + aspectRatio);
 
             mViewFinderTopLeft = new PointF(margin, margin);
             mViewFinderTopRight = new PointF(width - margin, margin);

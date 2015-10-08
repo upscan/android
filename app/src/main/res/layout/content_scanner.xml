@@ -4,7 +4,6 @@
     android:id="@+id/topLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#00ff00"
     android:keepScreenOn="true"
     android:gravity="center_horizontal"
     android:orientation="vertical">
@@ -13,7 +12,6 @@
         android:id="@+id/preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ff0000"
         android:layout_gravity="center_horizontal">
 
         <io.upscan.android.ui.GraphicOverlay

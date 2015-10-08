@@ -17,8 +17,6 @@
 package io.upscan.android;
 
 
-import android.util.Log;
-
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.barcode.Barcode;
@@ -56,10 +54,10 @@ class BarcodeGraphicTracker extends Tracker<Barcode> {
      */
     @Override
     public void onUpdate(Detector.Detections<Barcode> detectionResults, Barcode item) {
-        Log.d(TAG, "onUpdate: displayValue: " + item.displayValue
-                + ", rawValue: " + item.rawValue);
-        mOverlay.add(mGraphic);
-        mGraphic.updateItem(item);
+        if (mOverlay.isInsideViewFinder(item.cornerPoints, mGraphic)) {
+            mOverlay.add(mGraphic);
+            mGraphic.updateItem(item);
+        }
     }
 
     /**
