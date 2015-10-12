@@ -4,4 +4,5 @@
     <string name="ok">OK</string>
     <string name="permission_camera_rationale">I really need that camera!</string>
     <string name="low_storage_error">You are running out of storage space!</string>
+    <string name="no_camera_permission">No permission for camera, no can do.</string>
 </resources>

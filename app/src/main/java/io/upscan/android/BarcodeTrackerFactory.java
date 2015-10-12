@@ -28,16 +28,20 @@ import io.upscan.android.ui.GraphicOverlay;
  * multi-processor uses this factory to create barcode trackers as needed -- one for each barcode.
  */
 class BarcodeTrackerFactory implements MultiProcessor.Factory<Barcode> {
-    private GraphicOverlay<BarcodeGraphic> mGraphicOverlay;
 
-    BarcodeTrackerFactory(GraphicOverlay<BarcodeGraphic> barcodeGraphicOverlay) {
+    private GraphicOverlay<BarcodeGraphic> mGraphicOverlay;
+    private BarcodeDetectionListener mListener;
+
+    BarcodeTrackerFactory(GraphicOverlay<BarcodeGraphic> barcodeGraphicOverlay,
+                          BarcodeDetectionListener listener) {
         mGraphicOverlay = barcodeGraphicOverlay;
+        mListener = listener;
     }
 
     @Override
     public Tracker<Barcode> create(Barcode barcode) {
         BarcodeGraphic graphic = new BarcodeGraphic(mGraphicOverlay);
-        return new BarcodeGraphicTracker(mGraphicOverlay, graphic);
+        return new BarcodeGraphicTracker(mGraphicOverlay, mListener, graphic);
     }
 
 }

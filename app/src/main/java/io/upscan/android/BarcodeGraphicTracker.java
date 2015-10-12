@@ -35,10 +35,13 @@ class BarcodeGraphicTracker extends Tracker<Barcode> {
 
     private GraphicOverlay<BarcodeGraphic> mOverlay;
     private BarcodeGraphic mGraphic;
+    private BarcodeDetectionListener mListener;
 
-    BarcodeGraphicTracker(GraphicOverlay<BarcodeGraphic> overlay, BarcodeGraphic graphic) {
+    BarcodeGraphicTracker(GraphicOverlay<BarcodeGraphic> overlay, BarcodeDetectionListener listener,
+                          BarcodeGraphic graphic) {
         mOverlay = overlay;
         mGraphic = graphic;
+        mListener = listener;
     }
 
     /**
@@ -57,6 +60,7 @@ class BarcodeGraphicTracker extends Tracker<Barcode> {
         if (mOverlay.isInsideViewFinder(item.cornerPoints, mGraphic)) {
             mOverlay.add(mGraphic);
             mGraphic.updateItem(item);
+            mListener.onBarcodeDetected(detectionResults, item);
         }
     }
 

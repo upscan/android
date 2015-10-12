@@ -251,10 +251,12 @@ public class GraphicOverlay<T extends GraphicOverlay.Graphic> extends View {
                 mViewFinderBottomLeft
         };
 
+        Point translated = new Point();
+
         for (Point point : cornerPoints) {
-            if (!GeometryUtils.isWithInRectangle(rectangle,
-                    new Point((int) graphic.translateX(point.x),
-                            (int) graphic.translateY(point.y)))) {
+            translated.x = (int) graphic.translateX(point.x);
+            translated.y = (int) graphic.translateY(point.y);
+            if (!GeometryUtils.isWithInRectangle(rectangle, translated)) {
                 return false;
             }
         }
